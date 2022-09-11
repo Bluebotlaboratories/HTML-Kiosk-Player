@@ -132,8 +132,15 @@
                     videoPlayer.pause()
                     preLoadedVideos.push(videoPlayer);
                 } else {
-                    preLoadedVideos.push(videoURL)
+                    preLoadedVideos.push(videoURL);
                 }
+            }
+
+            if (!multiElementPlayback) {
+                document.getElementById("videoElement").addEventListener("ended", (event) => {
+                    console.log("Video Ended")
+                    playlistService();
+                });
             }
 
             console.log("Videos Loaded: " + preLoadedVideos);
