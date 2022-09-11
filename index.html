@@ -46,7 +46,7 @@
         }
     </style>
 
-    <div class="pageContainer">
+    <div id="pageContainer" class="pageContainer">
         <!--<video class="videoElement" autoplay></video>-->
         <button id="videoInsertionPoint" onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
         <br />
@@ -80,10 +80,6 @@
             preLoadedVideos[currentVideoIndex].currentTime = 0;
             preLoadedVideos[currentVideoIndex].classList.toggle("hiddenVideo")
             preLoadedVideos[currentVideoIndex].play();
-            
-            //videoElement.src = encodeURIComponent(preLoadedVideos[currentVideoIndex]).replace("%2F", "/");
-            //videoElement.currentTime = 0;
-            //videoElement.play();
         }
 
         // Globals
@@ -109,7 +105,7 @@
                 // Create pre-existing video player
                 const videoPlayer = document.createElement("video");
                 videoPlayer.classList.add("hiddenVideo");
-                videoPlayer.src = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");;
+                videoPlayer.src = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
                 videoPlayer.preload = "auto"
                 videoPlayer.poster = loadingImage;
                 videoPlayer.addEventListener("ended", (event) => {
@@ -118,7 +114,7 @@
                 });
 
                 // Add videoPlayer to HTML DOM and Playlist
-                document.body.insertBefore(videoPlayer, document.getElementById("videoInsertionPoint"));
+                document.getElementById("pageContainer").insertBefore(videoPlayer, document.getElementById("videoInsertionPoint"));
                 videoPlayer.pause()
                 
                 preLoadedVideos.push(videoPlayer);
