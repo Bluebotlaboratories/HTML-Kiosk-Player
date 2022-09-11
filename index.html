@@ -1,0 +1,116 @@
+<!------------------------------------->
+<!-- DO NOT EDIT OR DELETE THIS FILE -->
+<!------------------------------------->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1, minimum-scale=1">
+</head>
+<body onload="loaded()">
+    <script src="./playlist.js"></script>
+
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+        body {
+            background-color: black;
+        }
+
+        body {
+            margin: 0;
+        }
+        video {
+            display: block;
+            width: 100%;
+        }
+        video::-webkit-media-controls-panel {
+            display: none;
+        }
+        video::-webkit-media-controls {
+            display:none;
+        }
+        .pageContainer {
+            overflow: hidden;
+            height: 100vH;
+            width: 100vW;
+        }
+        button {
+            padding: 1%;
+            display: none; /* REMOVE THIS LINE IF YOU HAVE PROBLEMS */
+        }
+
+        .hiddenVideo {
+            display: none;
+        }
+    </style>
+
+    <div class="pageContainer">
+        <video class="videoElement" autoplay></video>
+        <button onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
+        <br />
+        <button onclick="videoElement.play();">CLICK THIS TO PLAY VIDEO IF IT ISN'T PLAYING</button>
+    </div>
+
+    <script>
+        function switchFullscreen() {
+            videoElement = document.getElementById("videoElement");
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.webkitRequestFullScreen) {
+                videoElement.webkitRequestFullScreen();
+            }
+        }
+
+        function playlistService() {
+            videoElement = document.getElementById("videoElement");
+
+            currentVideoIndex += 1;
+
+            if (currentVideoIndex >= preLoadedVideos.length) {
+                console.log("Reached End Of Playlist, Restarting")
+                currentVideoIndex = 0;
+            }
+
+            console.log("Playing Next Video")
+            videoElement.src = encodeURIComponent(preLoadedVideos[currentVideoIndex]).replace("%2F", "/");;
+            videoElement.currentTime = 0;
+            videoElement.play();
+        }
+
+        // Globals
+        preLoadedVideos = []
+        currentVideoIndex = -1;
+
+        // On Load
+        async function loaded() {
+            console.log("Page Loaded");
+
+            // Pre-Load Videos
+            for (var i=0; i < videoPlaylist.length; i++) {
+                console.log("Loading Video: [" + videoPlaylist[i] + "]");
+
+                // Get video data
+                // await fetch(videoPlaylist[i])
+                // .then((response) => response.blob())
+                // .then((blobData) => {
+                    // const blobObjectURL = URL.createObjectURL(blobData);
+                    // preLoadedVideos.push(blobObjectURL);
+                // });
+                
+                preLoadedVideos.push(videoPlaylist[i]);
+            }
+
+            console.log("Videos Loaded: " + preLoadedVideos);
+
+            playlistService();
+
+            document.getElementById("videoElement").addEventListener("ended", (event) => {
+                console.log("Video Ended")
+                playlistService();
+            });
+        }
+    </script>
+</body>
+</html>
