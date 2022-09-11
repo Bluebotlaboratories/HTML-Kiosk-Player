@@ -42,9 +42,9 @@
         }
     </style>
 
-    <div class="pageContainer">
-        <video id="videoElement" autoplay></video>
-        <button onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
+    <div id="pageContainer" class="pageContainer">
+        <video id="videoElement"></video>
+        <button id="videoInsertionPoint" onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
         <br />
         <button onclick="videoElement.play();">CLICK THIS TO PLAY VIDEO IF IT ISN'T PLAYING</button>
     </div>
@@ -60,7 +60,10 @@
         }
 
         function playlistService() {
-            videoElement = document.getElementById("videoElement");
+            if (currentVideoIndex >= 0 && multiElementPlayback) {
+                preLoadedVideos[currentVideoIndex].classList.toggle("hiddenVideo");
+                preLoadedVideos[currentVideoIndex].pause();
+            }
 
             currentVideoIndex += 1;
 
@@ -70,9 +73,17 @@
             }
 
             console.log("Playing Next Video")
-            videoElement.src = preLoadedVideos[currentVideoIndex];
-            videoElement.currentTime = 0;
-            videoElement.play();
+
+            if (multiElementPlayback) {
+                preLoadedVideos[currentVideoIndex].currentTime = 0;
+                preLoadedVideos[currentVideoIndex].classList.toggle("hiddenVideo")
+                preLoadedVideos[currentVideoIndex].play();
+            } else {
+                videoElement = document.getElementById("videoElement");
+                videoElement.src = preLoadedVideos[currentVideoIndex];
+                videoElement.currentTime = 0;
+                videoElement.play();
+            }
         }
 
         // Globals
@@ -86,7 +97,7 @@
             // Pre-Load Videos
             for (var i=0; i < videoPlaylist.length; i++) {
                 console.log("Loading Video: [" + videoPlaylist[i] + "]");
-                fixedVideoURI = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
+                videoURL = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
 
                 if (serverEnvironment) {
                     // Get video data
@@ -98,6 +109,28 @@
                     });
                 } else {
                     preLoadedVideos.push(fixedVideoURI);
+                }
+
+                if (multiElementPlayback) {
+                    document.getElementById("videoElement").classList.add("hiddenVideo");
+
+                    // Create pre-existing video player
+                    const videoPlayer = document.createElement("video");
+                    videoPlayer.classList.add("hiddenVideo");
+                    videoPlayer.src = videoURL;
+                    videoPlayer.preload = "auto"
+                    videoPlayer.poster = loadingImage;
+                    videoPlayer.addEventListener("ended", (event) => {
+                        console.log("Video Ended")
+                        playlistService();
+                    });
+
+                    // Add videoPlayer to HTML DOM and Playlist
+                    document.getElementById("pageContainer").insertBefore(videoPlayer, document.getElementById("videoInsertionPoint"));
+                    videoPlayer.pause()
+                    preLoadedVideos.push(videoPlayer);
+                } else {
+                    preLoadedVideos.push(videoURL)
                 }
             }
 
