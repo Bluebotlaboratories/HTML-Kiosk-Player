@@ -70,7 +70,7 @@
             }
 
             console.log("Playing Next Video")
-            videoElement.src = encodeURIComponent(preLoadedVideos[currentVideoIndex]).replace("%2F", "/");;
+            videoElement.src = preLoadedVideos[currentVideoIndex];
             videoElement.currentTime = 0;
             videoElement.play();
         }
@@ -86,22 +86,24 @@
             // Pre-Load Videos
             for (var i=0; i < videoPlaylist.length; i++) {
                 console.log("Loading Video: [" + videoPlaylist[i] + "]");
+                fixedVideoURI = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
 
                 if (serverEnvironment) {
                     // Get video data
-                    await fetch(videoPlaylist[i])
+                    await fetch(fixedVideoURI)
                     .then((response) => response.blob())
                     .then((blobData) => {
                         const blobObjectURL = URL.createObjectURL(blobData);
                         preLoadedVideos.push(blobObjectURL);
                     });
                 } else {
-                    preLoadedVideos.push(videoPlaylist[i]);
+                    preLoadedVideos.push(fixedVideoURI);
                 }
             }
 
             console.log("Videos Loaded: " + preLoadedVideos);
 
+            switchFullscreen();
             playlistService();
 
             document.getElementById("videoElement").addEventListener("ended", (event) => {
