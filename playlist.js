@@ -24,7 +24,8 @@ videoPlaylist = [
 ]
 
 // This is the path to the image that will display while the video is loading
-loadingImage = "./loading.gif"
+loadingImage = ""
 
-// DO NOT CHANGE THIS UNLESS YOU KNOW WHAT YOU'RE DOING //
-serverEnvironment = false;
+// DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU'RE DOING //
+serverEnvironment = false; // Whether or not this is running from a server, or being accessed locally as a HTML file
+multiElementPlayback = false; // Whether or not to use the multi-video element playback feature to improve(-ish, maybe?) performance
