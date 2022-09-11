@@ -40,10 +40,6 @@
             padding: 1%;
             display: none; /* REMOVE THIS LINE IF YOU HAVE PROBLEMS */
         }
-
-        .hiddenVideo {
-            display: none;
-        }
     </style>
 
     <div id="pageContainer" class="pageContainer">
@@ -104,13 +100,15 @@
                 videoURL = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
 
                 if (serverEnvironment) {
-                    //Get video data
-                    await fetch(videoURL)
+                    // Get video data
+                    await fetch(fixedVideoURI)
                     .then((response) => response.blob())
                     .then((blobData) => {
-                       const blobObjectURL = URL.createObjectURL(blobData);
-                       videoURL = blobObjectURL;
+                        const blobObjectURL = URL.createObjectURL(blobData);
+                        preLoadedVideos.push(blobObjectURL);
                     });
+                } else {
+                    preLoadedVideos.push(fixedVideoURI);
                 }
 
                 if (multiElementPlayback) {
@@ -138,7 +136,13 @@
 
             console.log("Videos Loaded: " + preLoadedVideos);
 
+            switchFullscreen();
             playlistService();
+
+            document.getElementById("videoElement").addEventListener("ended", (event) => {
+                console.log("Video Ended")
+                playlistService();
+            });
         }
     </script>
 </body>
