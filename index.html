@@ -47,7 +47,7 @@
     </style>
 
     <div id="pageContainer" class="pageContainer">
-        <!--<video class="videoElement" autoplay></video>-->
+        <!--<video class="videoElement"></video>
         <button id="videoInsertionPoint" onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
         <br />
         <button onclick="videoElement.play();">CLICK THIS TO PLAY VIDEO IF IT ISN'T PLAYING</button>
@@ -94,18 +94,22 @@
             for (var i=0; i < videoPlaylist.length; i++) {
                 console.log("Loading Video: [" + videoPlaylist[i] + "]");
 
-                // Get video data
-                // await fetch(videoPlaylist[i])
-                // .then((response) => response.blob())
-                // .then((blobData) => {
-                    // const blobObjectURL = URL.createObjectURL(blobData);
-                    // preLoadedVideos.push(blobObjectURL);
-                // });
+                videoURL = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
+
+                if (serverEnvironment) {
+                    //Get video data
+                    await fetch(videoURL)
+                    .then((response) => response.blob())
+                    .then((blobData) => {
+                       const blobObjectURL = URL.createObjectURL(blobData);
+                       videoURL = blobObjectURL;
+                    });
+                }
 
                 // Create pre-existing video player
                 const videoPlayer = document.createElement("video");
                 videoPlayer.classList.add("hiddenVideo");
-                videoPlayer.src = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");
+                videoPlayer.src = videoURL;
                 videoPlayer.preload = "auto"
                 videoPlayer.poster = loadingImage;
                 videoPlayer.addEventListener("ended", (event) => {

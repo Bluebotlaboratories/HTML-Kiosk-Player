@@ -25,3 +25,6 @@ videoPlaylist = [
 
 // This is the path to the image that will display while the video is loading
 loadingImage = "./loading.gif"
+
+// DO NOT CHANGE THIS UNLESS YOU KNOW WHAT YOU'RE DOING //
+serverEnvironment = false;
