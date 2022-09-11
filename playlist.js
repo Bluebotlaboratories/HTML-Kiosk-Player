@@ -28,4 +28,4 @@ loadingImage = ""
 
 // DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU'RE DOING //
 serverEnvironment = false; // Whether or not this is running from a server, or being accessed locally as a HTML file
-multiElementPlayback = false; // Whether or not to use the multi-video element playback feature to improve(-ish, maybe?) performance
+multiElementPlayback = true; // Whether or not to use the multi-video element playback feature to improve(-ish, maybe?) performance
