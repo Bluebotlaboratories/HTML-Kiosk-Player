@@ -47,8 +47,8 @@
     </style>
 
     <div class="pageContainer">
-        <video class="videoElement" autoplay></video>
-        <button onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
+        <!--<video class="videoElement" autoplay></video>-->
+        <button id="videoInsertionPoint" onclick="switchFullscreen();">CLICK THIS IF YOU CAN SEE IT/IF THE VIDEO ISN'T FULLSCREEN</button>
         <br />
         <button onclick="videoElement.play();">CLICK THIS TO PLAY VIDEO IF IT ISN'T PLAYING</button>
     </div>
@@ -64,7 +64,10 @@
         }
 
         function playlistService() {
-            videoElement = document.getElementById("videoElement");
+            if (currentVideoIndex >= 0) {
+                preLoadedVideos[currentVideoIndex].classList.toggle("hiddenVideo");
+                preLoadedVideos[currentVideoIndex].pause();
+            }
 
             currentVideoIndex += 1;
 
@@ -74,9 +77,13 @@
             }
 
             console.log("Playing Next Video")
-            videoElement.src = encodeURIComponent(preLoadedVideos[currentVideoIndex]).replace("%2F", "/");;
-            videoElement.currentTime = 0;
-            videoElement.play();
+            preLoadedVideos[currentVideoIndex].currentTime = 0;
+            preLoadedVideos[currentVideoIndex].classList.toggle("hiddenVideo")
+            preLoadedVideos[currentVideoIndex].play();
+            
+            //videoElement.src = encodeURIComponent(preLoadedVideos[currentVideoIndex]).replace("%2F", "/");
+            //videoElement.currentTime = 0;
+            //videoElement.play();
         }
 
         // Globals
@@ -98,18 +105,28 @@
                     // const blobObjectURL = URL.createObjectURL(blobData);
                     // preLoadedVideos.push(blobObjectURL);
                 // });
+
+                // Create pre-existing video player
+                const videoPlayer = document.createElement("video");
+                videoPlayer.classList.add("hiddenVideo");
+                videoPlayer.src = encodeURIComponent(videoPlaylist[i]).replace("%2F", "/");;
+                videoPlayer.preload = "auto"
+                videoPlayer.poster = loadingImage;
+                videoPlayer.addEventListener("ended", (event) => {
+                    console.log("Video Ended")
+                    playlistService();
+                });
+
+                // Add videoPlayer to HTML DOM and Playlist
+                document.body.insertBefore(videoPlayer, document.getElementById("videoInsertionPoint"));
+                videoPlayer.pause()
                 
-                preLoadedVideos.push(videoPlaylist[i]);
+                preLoadedVideos.push(videoPlayer);
             }
 
             console.log("Videos Loaded: " + preLoadedVideos);
 
             playlistService();
-
-            document.getElementById("videoElement").addEventListener("ended", (event) => {
-                console.log("Video Ended")
-                playlistService();
-            });
         }
     </script>
 </body>

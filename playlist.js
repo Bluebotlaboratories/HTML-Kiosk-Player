@@ -22,3 +22,6 @@ videoPlaylist = [
     "./video2.mp4",
     "./video3.mp4"
 ]
+
+// This is the path to the image that will display while the video is loading
+loadingImage = "./loading.gif"
