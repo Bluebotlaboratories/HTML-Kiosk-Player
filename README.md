@@ -1,5 +1,6 @@
 # HTML-Kiosk-Player
  Kiosk Video Player But It's HTML
+ Plays videos in fullscreen automatically from a playlist, supports local and server environments as well as preloading in server environments
 
 
 ## Setup
